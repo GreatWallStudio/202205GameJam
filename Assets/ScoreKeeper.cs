@@ -51,9 +51,7 @@ public class ScoreKeeper : MonoBehaviour
 
     private void Update()
     {
-        scoreCount++;
-        xPCount++;
-        updateScoreboard(); 
+
     }
 
     public void StartGame()

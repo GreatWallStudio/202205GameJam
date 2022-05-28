@@ -2,28 +2,44 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro; 
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] int numberOfLooseStonesToSpawn;
     [SerializeField] int numberOfSticksToSpawn;
     [SerializeField] int numberOfTreesToSpawn;
+    [SerializeField] int numberOfEnemiesToSpawn;
     [SerializeField] GameObject looseStone;
     [SerializeField] GameObject looseStick;
     [SerializeField] GameObject treeOfLife1;
     [SerializeField] GameObject treeOfLife2;
     [SerializeField] GameObject treeOfLife3;
+    [SerializeField] GameObject enemy;
     [SerializeField] GameObject gameArea;
-    [SerializeField] Renderer gameAreaRenderer; 
+    [SerializeField] Renderer gameAreaRenderer;
+    [SerializeField] Canvas titleCanvas; 
 
     // Start is called before the first frame update
     void Start()
     {
-        //SpawnTrees();
+        ShowTitleScreen(); 
+    }
+
+    public void ShowTitleScreen()
+    {
+        //show title screen 
+        titleCanvas.gameObject.SetActive(true); 
+    }
+
+    public void StartTheGame()
+    {
+        Debug.Log("Starting the Game"); 
         SpawnLooseStones();
         SpawnSticks();
-        SpawnTrees(); 
-        //gameAreaRenderer = gameArea.GetComponent<Renderer>(); 
+        SpawnTrees();
+        SpawnEnemies();
+        titleCanvas.gameObject.SetActive(false); 
     }
 
     private void SpawnTrees()
@@ -43,7 +59,16 @@ public class GameManager : MonoBehaviour
             Instantiate(treeOfLife3, spawnPoint, Quaternion.Euler(0, 0, 0));
         }
     }
-    
+
+    private void SpawnEnemies()
+    {
+        for (int i = 0; i < numberOfEnemiesToSpawn; i++)
+        {
+            var spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), .5f, UnityEngine.Random.Range(-100, 100));
+            Instantiate(enemy, spawnPoint, Quaternion.Euler(90, 0, 0));
+        }
+    }
+
     private void SpawnLooseStones()
     {
         for (int i = 0; i < numberOfLooseStonesToSpawn; i++)
