@@ -12,11 +12,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] int numberOfEnemiesToSpawn;
     [SerializeField] bool gameStarted;
     [SerializeField] bool gamePaused;
-    [SerializeField] GameObject looseStone;
+    [SerializeField] GameObject stoneOfLife;
+    [SerializeField] GameObject stoneOfDeath;
     [SerializeField] GameObject looseStick;
     [SerializeField] GameObject treeOfLife1;
     [SerializeField] GameObject treeOfLife2;
     [SerializeField] GameObject treeOfLife3;
+    [SerializeField] GameObject treeOfDeath1;
+    [SerializeField] GameObject treeOfDeath2;
+    [SerializeField] GameObject treeOfDeath3;
+    [SerializeField] Material groundPlane;
     [SerializeField] GameObject enemy;
     [SerializeField] Transform spawnedObjectsLocation;
     [SerializeField] Renderer gameAreaRenderer;
@@ -24,7 +29,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject startButton; 
     [SerializeField] GameObject restartButton; 
     [SerializeField] GameObject playAgain;
-    [SerializeField] ScoreKeeper scoreKeeper; 
+    [SerializeField] ScoreKeeper scoreKeeper;
+    private int worldType = 1; 
 
     // Start is called before the first frame update
     void Start()
@@ -133,7 +139,7 @@ public class GameManager : MonoBehaviour
         {
 //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
             var spawnPoint = new Vector3(UnityEngine.Random.Range(-100,100), .5f, UnityEngine.Random.Range(-100,100)); 
-            Instantiate(looseStone, spawnPoint, Quaternion.Euler(90,0,0), spawnedObjectsLocation);
+            Instantiate(stoneOfLife, spawnPoint, Quaternion.Euler(90,0,0), spawnedObjectsLocation);
         }
     }
     private void SpawnSticks()

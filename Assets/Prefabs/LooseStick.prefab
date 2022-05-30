@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6984532863350342951}
   - component: {fileID: -5707130996138867758}
   - component: {fileID: -47042688237919457}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: LooseStick
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -3656,11 +3656,16 @@ MonoBehaviour:
   numberOfEnemiesToSpawn: 50
   gameStarted: 0
   gamePaused: 0
-  looseStone: {fileID: 6984532863350342953, guid: 880222bbbd80fa14ba4fec0ec3506b4a, type: 3}
+  stoneOfLife: {fileID: 6984532863350342953, guid: 880222bbbd80fa14ba4fec0ec3506b4a, type: 3}
+  stoneOfDeath: {fileID: 0}
   looseStick: {fileID: 6984532863350342953, guid: 55cc6d36a45d48d47b53aeabd5594653, type: 3}
   treeOfLife1: {fileID: 6984532863350342953, guid: f915a926f7ca7394a93d0524ea689bf9, type: 3}
   treeOfLife2: {fileID: 6984532863350342953, guid: 36efde3a063e7644da62052c12e84b33, type: 3}
   treeOfLife3: {fileID: 6984532863350342953, guid: ed0b73a1ff5fa1640858bb70c3d0a0e6, type: 3}
+  treeOfDeath1: {fileID: 0}
+  treeOfDeath2: {fileID: 0}
+  treeOfDeath3: {fileID: 0}
+  groundPlane: {fileID: 2100000, guid: db9466e8d8a25bf4eb57b9e6473f7c15, type: 2}
   enemy: {fileID: 8528313265331858442, guid: 02b6232bf5be6704d949082940b61c30, type: 3}
   spawnedObjectsLocation: {fileID: 1251143157}
   gameAreaRenderer: {fileID: 449220360}

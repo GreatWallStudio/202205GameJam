@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -5707130996138867758}
   - component: {fileID: -47042688237919457}
   m_Layer: 3
-  m_Name: LooseStone
+  m_Name: StoneOfLife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

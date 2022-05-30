@@ -18,12 +18,12 @@ public class ObjectToPickUp : MonoBehaviour
         {
             collider.enabled=false;
 
-            if (name == "LooseStick(Clone)")
+            if (gameObject.layer == LayerMask.NameToLayer("Stick"))
             {
                 Debug.Log("IncrementingSticks call from object");
                 scoreKeeper.IncrementSticks();
             }
-            else if (name == "LooseStone(Clone)")
+            else if (gameObject.layer == LayerMask.NameToLayer("Stone"))
             {
                 Debug.Log("IncrementingStones call from object");
                 scoreKeeper.IncrementStones();
