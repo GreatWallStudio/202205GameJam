@@ -24,7 +24,6 @@ public class EnemyController : MonoBehaviour
          goal = GameObject.Find("Player");
          aliveQuad.gameObject.SetActive(true); 
          deadQuad.gameObject.SetActive(false); 
-
     }
 
     private void Update()
@@ -34,7 +33,10 @@ public class EnemyController : MonoBehaviour
             //navigate toward player
             agent.destination = goal.transform.position;
         }
-
+        if (!scoreKeeper.gameOn)
+        {
+            agent.Stop(); 
+        }
     }
 
     void OnCollisionEnter(Collision other)
@@ -46,6 +48,7 @@ public class EnemyController : MonoBehaviour
             agent.isStopped = true; 
             aliveQuad.gameObject.SetActive(false);
             deadQuad.gameObject.SetActive(true);
+
             //add to score and xp
             scoreKeeper.IncrementScore();
             scoreKeeper.IncrementXP();

@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float movementSpeed;
     [SerializeField] float movementDrag;
     [SerializeField] ScoreKeeper scoreKeeper;
+    [SerializeField] GameManager gameManager; 
     private Vector3 newRotation = new Vector3(0, 0, 0);
     Vector3 previousAimDirection;
     Vector3 aimDirection;
@@ -27,7 +28,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Texture wTex; 
     [SerializeField] Texture sTex; 
     [SerializeField] Texture aTex; 
-    [SerializeField] Texture dTex; 
+    [SerializeField] Texture dTex;
+    private bool pauseDelay;
 
     private void Start()
     {
@@ -37,11 +39,22 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-
+        
     }
 
     void Update()
     {
+        //check for pause keypress
+        if (Input.GetKey(KeyCode.P))
+        {
+            //put a delay on the pause
+            if (!pauseDelay)
+            {
+                gameManager.PauseTheGame();
+                StartCoroutine("Pause"); 
+                pauseDelay = true; 
+            }
+        }
         //check for double-key presses
         //aw
         if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W))
@@ -262,6 +275,11 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+    private IEnumerator Pause()
+    {
+        yield return new WaitForSecondsRealtime(1);
+        pauseDelay = false;
     }
     public IEnumerator FireDelay()
     {

@@ -22,6 +22,7 @@ public class ScoreKeeper : MonoBehaviour
     [SerializeField] TMP_Text livesUI;
     [SerializeField] TMP_Text levelUI;
     [SerializeField] GameObject theScreenOfDeath;
+    [SerializeField] GameManager gameManager; 
     [SerializeField] PlayerController playerController; 
 
     void updateScoreboard()
@@ -36,16 +37,11 @@ public class ScoreKeeper : MonoBehaviour
         if (lives == 0)
         {
             //kill player
-            playerController.Die(); 
+            playerController.Die();
+            gameManager.EndTheGame();
 
             //stop the game
             gameOn = false; 
-            
-            //show transition art 
-            theScreenOfDeath.SetActive(true); 
-            
-            //Change to death scene 
-
         }
     }
 
@@ -59,7 +55,19 @@ public class ScoreKeeper : MonoBehaviour
         gameOn = true;
     }
 
-    
+    public void ReStartGame()
+    {
+        scoreCount = 0;
+        xPCount = 0;
+        stonesInInventory = 0;
+        sticksInInventory = 0;
+        deaths = 3;
+        lives = 3;
+        level = 1;
+        updateScoreboard();
+        StartGame();
+    }
+
     public void StopGame()
     {
         gameOn = false; 
@@ -98,8 +106,11 @@ public class ScoreKeeper : MonoBehaviour
         updateScoreboard(); 
     }
     public void DecrementLives()    {
-        lives--;
-        updateScoreboard(); 
+        if (lives > 0)
+        {
+            lives--;
+            updateScoreboard();
+        }
     }
     public void IncrementDeaths()    {
         deaths++;
