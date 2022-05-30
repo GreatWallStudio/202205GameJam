@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] int numberOfSticksToSpawn;
     [SerializeField] int numberOfTreesToSpawn;
     [SerializeField] int numberOfEnemiesToSpawn;
-    [SerializeField] bool gameStarted;
-    [SerializeField] bool gamePaused;
+    public bool gameStarted;
+    public bool gamePaused;
     [SerializeField] GameObject stoneOfLife;
     [SerializeField] GameObject stoneOfDeath;
     [SerializeField] GameObject looseStick;
@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject treeOfDeath1;
     [SerializeField] GameObject treeOfDeath2;
     [SerializeField] GameObject treeOfDeath3;
-    [SerializeField] Material groundPlane;
+    [SerializeField] Renderer groundPlaneOfLife;
+    [SerializeField] Renderer groundPlaneOfDeath;
     [SerializeField] GameObject enemy;
     [SerializeField] Transform spawnedObjectsLocation;
     [SerializeField] Renderer gameAreaRenderer;
@@ -29,8 +30,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject startButton; 
     [SerializeField] GameObject restartButton; 
     [SerializeField] GameObject playAgain;
+    [SerializeField] TMP_Text transitionText;
+    [SerializeField] GameObject titleScreenOfLife; 
+    [SerializeField] GameObject titleScreenTransition; 
+    [SerializeField] GameObject titleScreenOfDeath; 
     [SerializeField] ScoreKeeper scoreKeeper;
-    private int worldType = 1; 
+    public int worldType = 1; 
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +49,10 @@ public class GameManager : MonoBehaviour
         startButton.SetActive(true);
         restartButton.SetActive(false);
         playAgain.SetActive(false);
+        titleScreenOfLife.SetActive(true);
+        titleScreenTransition.SetActive(false);
+        titleScreenOfDeath.SetActive(false);
+        transitionText.gameObject.SetActive(false);
         titleCanvas.gameObject.SetActive(true); 
     }
 
@@ -55,6 +64,7 @@ public class GameManager : MonoBehaviour
             GameObject.Destroy(child.gameObject); 
         }
 
+        worldType = 1; 
         StartTheGame(); 
         scoreKeeper.ReStartGame();
     }
@@ -74,6 +84,43 @@ public class GameManager : MonoBehaviour
         titleCanvas.gameObject.SetActive(false);
         gameStarted = true; 
     }
+
+    public void SwitchToDeathMode()
+    {
+        Debug.Log("Starting Death Mode");
+        worldType = 2;
+
+        //delete all trees, rocks, enemies, etc.
+        foreach (Transform child in spawnedObjectsLocation)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        startButton.SetActive(false);
+        restartButton.SetActive(false);
+        playAgain.SetActive(false);
+        titleScreenOfLife.SetActive(false);
+        titleScreenTransition.SetActive(true);
+        titleScreenOfDeath.SetActive(false);
+        transitionText.gameObject.SetActive(true); 
+        titleCanvas.gameObject.SetActive(true);
+
+        //give some time to read it then get death started
+        StartCoroutine("StartDeathMode"); 
+    }
+
+    public IEnumerator StartDeathMode()
+    {
+        yield return new WaitForSeconds(3);
+
+        SpawnLooseStones();
+        SpawnSticks();
+        SpawnTrees();
+        SpawnEnemies();
+        titleCanvas.gameObject.SetActive(false);
+        gameStarted = true;
+    }
+
     public void PauseTheGame()
     {
         if (!gamePaused)
@@ -81,6 +128,19 @@ public class GameManager : MonoBehaviour
             startButton.SetActive(false);
             restartButton.SetActive(true);
             playAgain.SetActive(false);
+            titleScreenTransition.SetActive(false);
+
+            if (worldType == 1)
+            {
+                titleScreenOfLife.SetActive(true);
+                titleScreenOfDeath.SetActive(false);
+            }
+            else if (worldType == 2)
+            {
+                titleScreenOfLife.SetActive(false);
+                titleScreenOfDeath.SetActive(true);
+            }
+            transitionText.gameObject.SetActive(false);
             titleCanvas.gameObject.SetActive(true);
             Time.timeScale = 0;
             gamePaused = true;
@@ -102,25 +162,51 @@ public class GameManager : MonoBehaviour
         startButton.SetActive(false);
         restartButton.SetActive(false);
         playAgain.SetActive(true);
+        transitionText.gameObject.SetActive(false);
+        titleScreenOfLife.SetActive(false);
+        titleScreenTransition.SetActive(false);
+        titleScreenOfDeath.SetActive(true);
         gameStarted = false;
         titleCanvas.gameObject.SetActive(true); 
     }
 
     private void SpawnTrees()
     {
+
         for (int i = 0; i < (numberOfTreesToSpawn); i++)
         {
-//            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
-            var spawnPoint = new Vector3(UnityEngine.Random.Range(-100,100), 5f, UnityEngine.Random.Range(-100,100)); 
-            Instantiate(treeOfLife1, spawnPoint, Quaternion.Euler(0,0,0), spawnedObjectsLocation);
+            if (worldType == 1)
+            {
+                groundPlaneOfLife.gameObject.SetActive(true); 
+                groundPlaneOfDeath.gameObject.SetActive(false); 
+                //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
+                var spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), 5f, UnityEngine.Random.Range(-100, 100));
+                Instantiate(treeOfLife1, spawnPoint, Quaternion.Euler(0, 0, 0), spawnedObjectsLocation);
 
-            //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
-            spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), 5f, UnityEngine.Random.Range(-100, 100));
-            Instantiate(treeOfLife2, spawnPoint, Quaternion.Euler(0, 0, 0), spawnedObjectsLocation);
+                //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
+                spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), 5f, UnityEngine.Random.Range(-100, 100));
+                Instantiate(treeOfLife2, spawnPoint, Quaternion.Euler(0, 0, 0), spawnedObjectsLocation);
 
-            //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
-            spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), 5f, UnityEngine.Random.Range(-100, 100));
-            Instantiate(treeOfLife3, spawnPoint, Quaternion.Euler(0, 0, 0), spawnedObjectsLocation);
+                //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
+                spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), 5f, UnityEngine.Random.Range(-100, 100));
+                Instantiate(treeOfLife3, spawnPoint, Quaternion.Euler(0, 0, 0), spawnedObjectsLocation);
+            }
+            else if (worldType == 2)
+            {
+                groundPlaneOfLife.gameObject.SetActive(false);
+                groundPlaneOfDeath.gameObject.SetActive(true);
+                //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
+                var spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), 5f, UnityEngine.Random.Range(-100, 100));
+                Instantiate(treeOfDeath1, spawnPoint, Quaternion.Euler(0, 0, 0), spawnedObjectsLocation);
+
+                //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
+                spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), 5f, UnityEngine.Random.Range(-100, 100));
+                Instantiate(treeOfDeath2, spawnPoint, Quaternion.Euler(0, 0, 0), spawnedObjectsLocation);
+
+                //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
+                spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), 5f, UnityEngine.Random.Range(-100, 100));
+                Instantiate(treeOfDeath3, spawnPoint, Quaternion.Euler(0, 0, 0), spawnedObjectsLocation);
+            }
         }
     }
 
@@ -135,11 +221,23 @@ public class GameManager : MonoBehaviour
 
     private void SpawnLooseStones()
     {
-        for (int i = 0; i < numberOfLooseStonesToSpawn; i++)
+        if (worldType == 1)
         {
-//            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
-            var spawnPoint = new Vector3(UnityEngine.Random.Range(-100,100), .5f, UnityEngine.Random.Range(-100,100)); 
-            Instantiate(stoneOfLife, spawnPoint, Quaternion.Euler(90,0,0), spawnedObjectsLocation);
+            for (int i = 0; i < numberOfLooseStonesToSpawn; i++)
+            {
+                //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
+                var spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), .5f, UnityEngine.Random.Range(-100, 100));
+                Instantiate(stoneOfLife, spawnPoint, Quaternion.Euler(90, 0, 0), spawnedObjectsLocation);
+            }
+        }
+        else if (worldType == 2)
+        {
+            for (int i = 0; i < numberOfLooseStonesToSpawn; i++)
+            {
+                //            var spawnPoint = new Vector3(UnityEngine.Random.Range(-(gameAreaRenderer.bounds.size.x/2), gameAreaRenderer.bounds.size.x/2), 0, UnityEngine.Random.Range(gameAreaRenderer.bounds.size.z, gameAreaRenderer.bounds.size.z)); 
+                var spawnPoint = new Vector3(UnityEngine.Random.Range(-100, 100), .5f, UnityEngine.Random.Range(-100, 100));
+                Instantiate(stoneOfDeath, spawnPoint, Quaternion.Euler(90, 0, 0), spawnedObjectsLocation);
+            }
         }
     }
     private void SpawnSticks()

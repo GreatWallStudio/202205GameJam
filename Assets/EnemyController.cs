@@ -10,7 +10,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] NavMeshAgent agent;
     [SerializeField] GameObject aliveQuad;
     [SerializeField] GameObject deadQuad;
-    [SerializeField] GameObject wolf;
+    [SerializeField] GameManager gameManager;
 
     private ScoreKeeper scoreKeeper;
     private GameObject goal; 
@@ -21,6 +21,7 @@ public class EnemyController : MonoBehaviour
          agent = GetComponent<NavMeshAgent>();
          collider = GetComponent<BoxCollider>(); 
          scoreKeeper = FindObjectOfType<ScoreKeeper>(); 
+         gameManager = FindObjectOfType<GameManager>(); 
          goal = GameObject.Find("Player");
          aliveQuad.gameObject.SetActive(true); 
          deadQuad.gameObject.SetActive(false); 
@@ -54,11 +55,21 @@ public class EnemyController : MonoBehaviour
             scoreKeeper.IncrementXP();
 
             //spawn 2 more enemies nearby after a brief delay
-            StartCoroutine("Pause");
+            //StartCoroutine("Pause");
         }
         if (other.gameObject.name == "Player")
         {
-            scoreKeeper.DecrementLives();
+            Debug.Log("test1"); 
+            if (gameManager.worldType == 1)
+            {
+                Debug.Log("test2");
+                scoreKeeper.DecrementLives();
+            }
+            else if (gameManager.worldType ==2)
+            {
+                Debug.Log("test3");
+                scoreKeeper.DecrementDeaths();
+            }
         }
     }
     public IEnumerator Pause()

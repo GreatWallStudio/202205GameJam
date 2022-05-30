@@ -5,13 +5,13 @@ using TMPro;
 
 public class ScoreKeeper : MonoBehaviour
 {
-    public bool gameOn = true; 
+    public bool gameOn = false; 
     public int scoreCount = 0; 
     public int xPCount = 0;    
     public int stonesInInventory = 0; 
     public int sticksInInventory = 0;
     public int deaths = 3;
-    public int lives = 3;
+    public int lives = 1;
     public int level = 1;
 
     [SerializeField] TMP_Text scoreUI;
@@ -34,15 +34,20 @@ public class ScoreKeeper : MonoBehaviour
         levelUI.text = level.ToString();
         sticksUI.text = sticksInInventory.ToString();
         stonesUI.text = stonesInInventory.ToString();
-        if (lives == 0)
+        if (lives == 0 && gameManager.worldType == 1)
+        {
+            //Reset game to death mode
+            gameManager.SwitchToDeathMode(); 
+        }
+        if (deaths == 0)
         {
             //kill player
             playerController.Die();
             gameManager.EndTheGame();
 
             //stop the game
-            gameOn = false; 
-        }
+            gameOn = false;
+        }    
     }
 
     private void Update()
@@ -116,7 +121,7 @@ public class ScoreKeeper : MonoBehaviour
         deaths++;
         updateScoreboard(); 
     }
-    public void DecrementLDeaths()    {
+    public void DecrementDeaths()    {
         deaths--;
         updateScoreboard(); 
     }
